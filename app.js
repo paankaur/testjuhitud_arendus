@@ -1,18 +1,13 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-
-
+import todoRoutes from './routes/todo.routes.js';
+import connectDB from './mongodb/mongodb.connect.js';
 const app = express();
-const PORT = process.env.PORT || 3210;
-
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
+connectDB();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/todos', todoRoutes);
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+export default app;
