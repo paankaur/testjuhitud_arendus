@@ -1,6 +1,6 @@
 import * as  TodoController  from "../../controllers/todo.controller.js";
 import TodoModel from "../../models/todo.model.js";
-import { beforeEach, expect, jest } from '@jest/globals';
+import { beforeEach, expect, it, jest } from '@jest/globals';
 import httpMocks from "node-mocks-http";
 import newTodo from "../mock-data/new-todo.json";
 
@@ -11,7 +11,7 @@ beforeEach(() => {
   
     req = httpMocks.createRequest();
     res = httpMocks.createResponse();
-    next = null;
+    next = jest.fn();
 });
 
 
@@ -40,5 +40,13 @@ describe("TodoController", () => {
     TodoModel.create.mockReturnValue(newTodo);
     await TodoController.createTodo(req, res, next);
     expect(res._getJSONData()).toEqual(newTodo);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Done property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    TodoModel.create.mockReturnValue(rejectedPromise);
+    await TodoController.createTodo(req, res, next);
+    expect(next).toHaveBeenCalledWith(errorMessage);
   });
 });

@@ -16,4 +16,14 @@ describe(endpointUrl, () => {
         expect(response.body.title).toBe(newTodo.title);
         expect(response.body.completed).toBe(newTodo.completed);
     });
+
+    it("should return 500 on malfiormed data with POST " + endpointUrl, async () => {
+        const response = await supertest(app)
+            .post(endpointUrl)
+            .send({title: "Missing completed property"});
+        expect(response.status).toBe(500);
+        expect(response.body).toStrictEqual({
+            message: "Todo validation failed: completed: Path `completed` is required."
+        });
+    });
 });

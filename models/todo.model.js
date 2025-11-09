@@ -10,10 +10,10 @@ const TodoSchema = new mongoose.Schema({
   completed: {
     type: Boolean,
     required: true,
-    default: false
+   // default: false
   }
 });
 
 const TodoModel = mongoose.model("Todo", TodoSchema);
 
-export default TodoModel;2
+export default TodoModel;
