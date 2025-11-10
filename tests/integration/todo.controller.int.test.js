@@ -6,7 +6,12 @@ import newTodo from "../mock-data/new-todo.json";
 import mongoose from "mongoose";
 
 const endpointUrl = "/todos/";
-let firstTodo;
+let firstTodo, newTodoId;
+const testData = {
+  title: "Updated title for this integration test fr fr",
+  completed: true,
+};
+const nonExistingId = new mongoose.Types.ObjectId().toString();
 
 describe(endpointUrl, () => {
   it("POST " + endpointUrl, async () => {
@@ -15,6 +20,7 @@ describe(endpointUrl, () => {
     expect(response.status).toBe(201);
     expect(response.body.title).toBe(newTodo.title);
     expect(response.body.completed).toBe(newTodo.completed);
+    newTodoId = response.body._id;
   });
 
   it(
@@ -52,8 +58,24 @@ describe(endpointUrl, () => {
   });
 
   it("GET " + endpointUrl + ":todoId with non-existing id", async () => {
-    const nonExistingId = new mongoose.Types.ObjectId().toString();
     const response = await supertest(app).get(endpointUrl + nonExistingId);
+    expect(response.status).toBe(404);
+    expect(response.body).toStrictEqual({ message: "Todo not found" });
+  });
+
+  it("PUT update " + endpointUrl + ":todoId", async () => {
+    const response = await supertest(app)
+      .put(endpointUrl + newTodoId)
+      .send(testData);
+    expect(response.status).toBe(200);
+    expect(response.body._id).toBe(newTodoId);
+    expect(response.body.title).toBe(testData.title);
+    expect(response.body.completed).toBe(testData.completed);
+  });
+  it("should return 404 on PUT " + endpointUrl + ":todoId with non-existing id", async () => {
+    const response = await supertest(app)
+      .put(endpointUrl + nonExistingId)
+      .send(testData);
     expect(response.status).toBe(404);
     expect(response.body).toStrictEqual({ message: "Todo not found" });
   });
