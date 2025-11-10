@@ -72,11 +72,31 @@ describe(endpointUrl, () => {
     expect(response.body.title).toBe(testData.title);
     expect(response.body.completed).toBe(testData.completed);
   });
-  it("should return 404 on PUT " + endpointUrl + ":todoId with non-existing id", async () => {
-    const response = await supertest(app)
-      .put(endpointUrl + nonExistingId)
-      .send(testData);
-    expect(response.status).toBe(404);
-    expect(response.body).toStrictEqual({ message: "Todo not found" });
+  it(
+    "should return 404 on PUT " + endpointUrl + ":todoId with non-existing id",
+    async () => {
+      const response = await supertest(app)
+        .put(endpointUrl + nonExistingId)
+        .send(testData);
+      expect(response.status).toBe(404);
+      expect(response.body).toStrictEqual({ message: "Todo not found" });
+    }
+  );
+
+  it("DELETE " + endpointUrl + ":todoId", async () => {
+    const response = await supertest(app).delete(endpointUrl + newTodoId);
+    expect(response.status).toBe(200);
+    expect(response.body._id).toBe(newTodoId);
   });
+
+  it(
+    "should return 404 on DELETE " +
+      endpointUrl +
+      ":todoId with non-existing id",
+    async () => {
+      const response = await supertest(app).delete(endpointUrl + nonExistingId);
+      expect(response.status).toBe(404);
+      expect(response.body).toStrictEqual({ message: "Todo not found" });
+    }
+  );
 });
