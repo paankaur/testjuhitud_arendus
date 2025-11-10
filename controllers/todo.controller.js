@@ -16,5 +16,18 @@ const getTodos = async (req, res, next) => {
     next(error);
   }
 };
+const getTodoById = async (req, res, next) => {
+  try {
+    const todoId = req.params.todoId;
+    const todo = await TodoModel.findById(todoId);
+    if (todo) {
+      res.status(200).json(todo);
+    } else {
+      res.status(404).json({ message: "Todo not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
-export { createTodo, getTodos };
+export { createTodo, getTodos, getTodoById };
