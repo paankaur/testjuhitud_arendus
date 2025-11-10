@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Existing Todo Item 1",
+    "completed": true
+  },
+  {
+    "title": "Existing Todo Item 2",
+    "completed": false
+  }
+]
